@@ -1,3 +1,1 @@
-urlpatterns[
-    path('',view_as)
-]
+from django.urls import path
