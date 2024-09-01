@@ -7,6 +7,9 @@ class User(AbstractUser):
     name=models.CharField(max_length=255)
     username=models.CharField(max_length=255,unique=True)
     
+    def __str__(self):
+        return str(self.username)
+    
     
 class BlogPost(models.Model):
     title=models.CharField(max_length=255,null=True,blank=True)
@@ -14,7 +17,7 @@ class BlogPost(models.Model):
     author=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     created_at=models.DateTimeField(default=timezone.now)
     updated_at=models.DateTimeField(default=timezone.now,blank=True,null=True)
-    
+   
     
 class Comment(models.Model):
     post=models.ForeignKey(BlogPost,on_delete=models.CASCADE)
