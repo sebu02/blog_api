@@ -18,6 +18,9 @@ class BlogPost(models.Model):
     created_at=models.DateTimeField(default=timezone.now)
     updated_at=models.DateTimeField(default=timezone.now,blank=True,null=True)
    
+    def __str__(self):
+        return str(self.id)
+    
     
 class Comment(models.Model):
     post=models.ForeignKey(BlogPost,on_delete=models.CASCADE)
@@ -25,3 +28,6 @@ class Comment(models.Model):
     author=models.ForeignKey(User,on_delete=models.CASCADE)
     created_at=models.DateTimeField(default=timezone.now)
     updated_at=models.DateTimeField(default=timezone.now,blank=True,null=True)
+
+    def __str__(self):
+        return str(self.id)
