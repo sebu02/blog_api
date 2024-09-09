@@ -20,6 +20,13 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
+class GetUserSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model=User
+        fields=['name']
+    
+    
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
@@ -51,36 +58,39 @@ class LoginSerializer(serializers.Serializer):
         
         
 class BlogSerializer(serializers.ModelSerializer):
-    author = UserSerializer(read_only=True) 
+    author=GetUserSerializer(read_only=True)
     class Meta:
         model=BlogPost
         fields=['title','content','author']
         
         
 class CommentSerializer(serializers.ModelSerializer):
-    author=UserSerializer(read_only=True)
+    user=GetUserSerializer(read_only=True)
     class Meta:
         model=Comment
-        fields=['author','post','content']
+        fields=['user','post','comment']
         
 class GetBlogSerializer(serializers.ModelSerializer):
+    author=GetUserSerializer(read_only=True)
     
     class Meta:
         model=BlogPost
         fields=['title','content','author']
         
 class GetCommentSerializer(serializers.ModelSerializer):
-    
+    user=GetUserSerializer(read_only=True)
+    post=GetBlogSerializer()
     class Meta:
         model=Comment
-        fields=['author','content','post']
+        fields=['post','comment','user']
         
         
 class  ReplyCommentSerializer(serializers.ModelSerializer):
-    author=UserSerializer(read_only=True)
+    author=GetUserSerializer(read_only=True)
     class Meta:
         model=Comment
-        fields=['author','content','post','parent']
+        fields=['post','parent','author','comment']
         
+
 
 

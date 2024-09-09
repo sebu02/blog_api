@@ -24,9 +24,9 @@ class BlogPost(models.Model):
     
 class Comment(models.Model):
     post=models.ForeignKey(BlogPost,on_delete=models.CASCADE)
-    content=models.TextField(max_length=200,blank=True,null=True)
-    parent = models.ForeignKey('self',null=True,on_delete=models.CASCADE)
-    author=models.ForeignKey(User,on_delete=models.CASCADE)
+    comment=models.TextField(max_length=200,blank=True,null=True)
+    parent = models.ForeignKey('self',null=True,on_delete=models.CASCADE,related_name='+')
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
     created_at=models.DateTimeField(default=timezone.now)
     updated_at=models.DateTimeField(default=timezone.now,blank=True,null=True)
 

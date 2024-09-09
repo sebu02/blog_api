@@ -19,6 +19,4 @@ urlpatterns = [
     path('search/',BlogSearch.as_view(),name='search'),
     
     path('comment/reply/',CommentReply.as_view(),name='comment-reply'),
-    path('comment/reply/update/<int:id>',CommentReply.as_view(),name='comment-update'),
-    path('comment/reply/delete/<int:id>',CommentReply.as_view,name='comment-delete'),
 ]
