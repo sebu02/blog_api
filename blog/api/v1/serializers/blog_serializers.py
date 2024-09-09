@@ -70,10 +70,17 @@ class GetBlogSerializer(serializers.ModelSerializer):
         fields=['title','content','author']
         
 class GetCommentSerializer(serializers.ModelSerializer):
-    name=UserSerializer(read_only=True)
+    
     class Meta:
         model=Comment
-        fields=['name','content']
+        fields=['author','content','post']
+        
+        
+class  ReplyCommentSerializer(serializers.ModelSerializer):
+    author=UserSerializer(read_only=True)
+    class Meta:
+        model=Comment
+        fields=['author','content','post','parent']
         
 
 

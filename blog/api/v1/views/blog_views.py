@@ -30,7 +30,7 @@ class Login(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
     
     
-class BlogCreate(APIView):
+class BlogCUD(APIView):
     permission_classes=[IsAuthenticated]
     
     def post(self,request):
@@ -40,27 +40,13 @@ class BlogCreate(APIView):
             return Response({'message':'successfully uploaded'},status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
- 
-class BlogUpdate(APIView):
-    permission_classes=[IsAuthenticated]
-    
-    def put (self,request,id):
-        blog=BlogPost.objects.get(pk=id)
+    def put (self,request,pk):
+        blog=BlogPost.objects.get(pk=pk)
         serializer=BlogSerializer(blog,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save(author=self.request.user)
             return Response({'message':'successfully uploaded'},status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
- 
-        
-class BlogListView(ListAPIView):
-    permission_classes=[IsAuthenticated]
-    serializer_class=GetBlogSerializer
-    queryset=BlogPost.objects.all()
-    
-    
-class BlogDelete(ListAPIView):
-    permission_classes=[IsAuthenticated]
     
     def delete(self,request,id):
         if not BlogPost.objects.filter(id=id).exists():
@@ -69,7 +55,13 @@ class BlogDelete(ListAPIView):
         blog.delete()
         return Response({'message': 'blog deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
   
+            
+class BlogListView(ListAPIView):
+    permission_classes=[IsAuthenticated]
+    serializer_class=GetBlogSerializer
+    queryset=BlogPost.objects.all()
     
+      
 class BlogRetrieve(RetrieveAPIView):
     permission_classes=[IsAuthenticated]
     
@@ -79,7 +71,7 @@ class BlogRetrieve(RetrieveAPIView):
         return Response(serializer.data)
                   
 
-class CommentPost(APIView):
+class CommentCUD(APIView):
     permission_classes=[IsAuthenticated]
     
     def post(self,request):
@@ -89,10 +81,6 @@ class CommentPost(APIView):
             return Response({'message':'commented successfully'},status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-       
-        
-class CommentUpdate(APIView):
-    permission_classes=[IsAuthenticated]
     
     def put(self,request,id):
         comment=Comment.objects.get(id=id)
@@ -103,17 +91,13 @@ class CommentUpdate(APIView):
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         
-
-class CommentDelete(ListAPIView):
-    permission_classes=[IsAuthenticated]
-    
     def delete(self,request,id):
         if not Comment.objects.filter(id=id).exists():
             return Response({'message': 'blog does not exist'}, status=status.HTTP_404_NOT_FOUND)
         comment = Comment.objects.get(pk=id)
         comment.delete()
         return Response({'message': 'blog deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
-    
+
 
 class CommentRetrieve(RetrieveAPIView):
     permission_classes=[IsAuthenticated]
@@ -128,19 +112,36 @@ class CommentList(ListAPIView):
     permission_classes=[IsAuthenticated]
     
     def get(self,request,id):
-        comment=Comment.objects.filter(post=id)
-        serializer=GetCommentSerializer(comment)
-        return Response(serializer.data)
-    
+        queryset = Comment.objects.filter(post_id=id)
+        serializer_class = GetCommentSerializer(queryset, many=True)
+        return Response(serializer_class.data)
+
 
 class BlogSearch(generics.ListCreateAPIView):
     search_fields=['title']
     filter_backends=(filters.SearchFilter,)
     queryset=BlogPost.objects.all()
     serializer_class =  GetBlogSerializer
-       
+    
+    
+class CommentReply(APIView):
+    permission_classes=[IsAuthenticated]
+    
+    def post(self,request):
+        serializer=ReplyCommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+            return Response({'message':'comment replied successfully'},status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         
         
+
+        
+        
+        
+
+
         
         
         
