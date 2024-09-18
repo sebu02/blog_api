@@ -4,9 +4,16 @@ from rest_framework.generics import ListAPIView,RetrieveAPIView
 from rest_framework import status,generics,filters
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 
 
 from blog.api.v1.serializers.blog_serializers import *
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 
 class Register(APIView):
@@ -60,15 +67,18 @@ class BlogListView(ListAPIView):
     permission_classes=[IsAuthenticated]
     serializer_class=GetBlogSerializer
     queryset=BlogPost.objects.all()
+    pagination_class = StandardResultsSetPagination
     
       
 class BlogRetrieve(RetrieveAPIView):
     permission_classes=[IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
     
     def get(self,request,id):
         blog=BlogPost.objects.get(id=id)
         serializer=GetBlogSerializer(blog)
         return Response(serializer.data)
+    
                   
 
 class CommentCUD(APIView):
@@ -101,6 +111,7 @@ class CommentCUD(APIView):
 
 class CommentRetrieve(RetrieveAPIView):
     permission_classes=[IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
     
     def get(self,request,id):
         comment=Comment.objects.get(id=id)
@@ -110,11 +121,13 @@ class CommentRetrieve(RetrieveAPIView):
 
 class CommentList(ListAPIView):
     permission_classes=[IsAuthenticated]
+    pagination_class = StandardResultsSetPagination
     
     def get(self,request,id):
         queryset = Comment.objects.filter(post_id=id)
         serializer_class = GetCommentSerializer(queryset, many=True)
         return Response(serializer_class.data)
+    
 
 
 class BlogSearch(generics.ListCreateAPIView):
