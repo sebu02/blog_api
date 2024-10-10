@@ -1,7 +1,7 @@
 *.pyc
 _pycache_
 db.sqlite3
-/env
+/benv
 *.env
 .vscode
 csv_data/
