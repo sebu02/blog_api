@@ -91,13 +91,9 @@ WSGI_APPLICATION = 'blog_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE':env('ENGINE'),
-        'NAME':env('NAME'),
-        'USER': env('USER'),
-        'PASSWORD': env('PASSWORD'),
-        'HOST': env('HOST'),
-        'PORT':env('PORT'),
-    } 
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
